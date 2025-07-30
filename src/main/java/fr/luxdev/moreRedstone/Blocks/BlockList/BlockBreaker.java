@@ -48,7 +48,7 @@ public class BlockBreaker {
         Entity entity = dropSpawnLocation.getWorld().spawnEntity(dropSpawnLocation, EntityType.ITEM, false);
         if (!(entity instanceof Item drop)) return;
 
-        ItemStack dropItemStack = item();
+        ItemStack dropItemStack = item(plugin.getTagManager());
 
         drop.setItemStack(dropItemStack);
 
