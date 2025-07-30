@@ -7,6 +7,7 @@ import org.bukkit.block.Block;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockPhysicsEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.metadata.MetadataValue;
@@ -63,4 +64,20 @@ public class BlockListeners implements Listener {
 
     }
 
+    @EventHandler
+    public void blockPhysicsEvent(BlockPhysicsEvent event) {
+
+        Block block = event.getBlock();
+        TagManager tagManager = plugin.getTagManager();
+        String customBlockType = tagManager.block(block, "customBlockType", PersistentDataType.STRING);
+
+        switch (customBlockType) {
+            case "blockBreaker":
+                blockBreaker.onPhysics(event);
+                break;
+            default:
+                break;
+        }
+
+    }
 }

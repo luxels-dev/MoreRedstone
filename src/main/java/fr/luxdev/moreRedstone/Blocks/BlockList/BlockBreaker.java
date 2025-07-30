@@ -8,10 +8,12 @@ import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Item;
 import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockPhysicsEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -56,6 +58,31 @@ public class BlockBreaker {
         drop.setItemStack(dropItemStack);
 
         tagManager.removeBlock(block, "customBlockType");
+
+    }
+
+    public void onPhysics(BlockPhysicsEvent event) {
+
+        Block block = event.getBlock();
+
+        if (block.getType() != Material.DISPENSER) return;
+
+        if (!block.isBlockIndirectlyPowered()) return;
+
+        BlockFace blockFace = block.getFace(block);
+        if (blockFace==null) return;
+        Block blockToBreak = block.getRelative(blockFace);
+
+        if (blockToBreak.getType()==Material.BEDROCK ||
+                blockToBreak.getType()==Material.BARRIER ||
+                blockToBreak.getType()==Material.STRUCTURE_BLOCK ||
+                blockToBreak.getType()==Material.STRUCTURE_VOID ||
+                blockToBreak.getType()==Material.END_GATEWAY ||
+                blockToBreak.getType()==Material.END_PORTAL ||
+                blockToBreak.getType()==Material.END_PORTAL_FRAME
+        ) return;
+
+        blockToBreak.breakNaturally(new ItemStack(Material.DIAMOND_PICKAXE), true, true);
 
     }
 
