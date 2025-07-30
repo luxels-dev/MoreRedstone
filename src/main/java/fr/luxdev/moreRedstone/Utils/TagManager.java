@@ -25,6 +25,10 @@ public class TagManager {
         return block.getMetadata(key);
     }
 
+    public void removeBlock(Block block, String key) {
+        block.removeMetadata(key, plugin);
+    }
+
     public void setBlock(Block block, String key, Object value) {
 
         if (isValid(value))
@@ -42,6 +46,12 @@ public class TagManager {
         return item.getPersistentDataContainer().get(new NamespacedKey(plugin, key), type);
     }
 
+    public void removeItem(ItemStack item, String key) {
+        item.editPersistentDataContainer(persistentDataContainer -> {
+            persistentDataContainer.remove(new NamespacedKey(plugin, key));
+        });
+    }
+
     public <P, C> void setItem(ItemStack item, String key, PersistentDataType<P, C> type, C value) {
         item.editPersistentDataContainer(persistentDataContainer -> {
             persistentDataContainer.set(new NamespacedKey(plugin, key), type, value);
@@ -56,8 +66,7 @@ public class TagManager {
                 object instanceof Integer ||
                 object instanceof Long ||
                 object instanceof Short ||
-                object instanceof String ||
-                object instanceof NullType;
+                object instanceof String;
     }
 
 }

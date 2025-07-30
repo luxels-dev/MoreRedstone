@@ -55,7 +55,7 @@ public class BlockBreaker {
 
         drop.setItemStack(dropItemStack);
 
-        tagManager.setBlock(block, "customBlockType", null);
+        tagManager.removeBlock(block, "customBlockType");
 
     }
 
