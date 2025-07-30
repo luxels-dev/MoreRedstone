@@ -14,6 +14,7 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.persistence.PersistentDataType;
 
 import java.util.List;
 
@@ -47,6 +48,14 @@ public class BlockBreaker {
         Entity entity = dropSpawnLocation.getWorld().spawnEntity(dropSpawnLocation, EntityType.ITEM, false);
         if (!(entity instanceof Item drop)) return;
 
+        ItemStack dropItemStack = item();
+
+        drop.setItemStack(dropItemStack);
+
+    }
+
+    public static ItemStack item(TagManager tagManager) {
+
         ItemStack dropItemStack = new ItemStack(Material.DISPENSER);
         ItemMeta dropItemStackMeta = dropItemStack.getItemMeta();
 
@@ -58,7 +67,9 @@ public class BlockBreaker {
 
         dropItemStack.setItemMeta(dropItemStackMeta);
 
-        drop.setItemStack(dropItemStack);
+        tagManager.setItem(dropItemStack, "itemCustomBlockType", PersistentDataType.STRING, "blockBreakerItem");
+
+        return dropItemStack;
 
     }
 
