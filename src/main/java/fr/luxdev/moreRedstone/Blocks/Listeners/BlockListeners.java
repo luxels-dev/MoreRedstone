@@ -12,6 +12,8 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.metadata.MetadataValue;
 import org.bukkit.persistence.PersistentDataType;
 
+import java.util.List;
+
 public class BlockListeners implements Listener {
 
     private final MoreRedstone plugin;
@@ -49,9 +51,9 @@ public class BlockListeners implements Listener {
 
         Block block = event.getBlock();
         TagManager tagManager = plugin.getTagManager();
-        MetadataValue customBlockTypeValue = tagManager.block(block, "customBlockType").getFirst();
-        if (customBlockTypeValue == null) return;
-        String customBlockType = customBlockTypeValue.asString();
+        List<MetadataValue> customBlockTypeValue = tagManager.block(block, "customBlockType");
+        if (customBlockTypeValue.isEmpty()) return;
+        String customBlockType = customBlockTypeValue.getFirst().asString();
 
         switch (customBlockType) {
             case "blockBreaker":
