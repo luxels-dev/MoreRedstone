@@ -56,7 +56,7 @@ public class GiveItemCommand implements TabExecutor {
             player.getInventory().addItem(listOfItem);
         }
 
-        StringBuilder givingMessage = new StringBuilder("&a");
+        StringBuilder givingMessage = new StringBuilder("§a");
 
         if (listOfItemNames.isEmpty()) givingMessage.append("0 items given");
         else {
