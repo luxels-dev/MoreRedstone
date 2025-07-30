@@ -46,6 +46,7 @@ public class GiveItemCommand implements TabExecutor {
                 case "block_breaker":
                     listOfItems.add(BlockBreaker.item(plugin.getTagManager()));
                     listOfItemNames.add(string.toLowerCase());
+                    break;
                 default:
                     player.sendMessage("§c\""+string.toLowerCase()+"\" does not exist");
                     break;
