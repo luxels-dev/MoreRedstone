@@ -27,7 +27,7 @@ public class TagManager {
 
         Chunk chunk = block.getChunk();
         PersistentDataContainer dataContainer = chunk.getPersistentDataContainer();
-        String string = "loc:"+block.getX()+","+block.getY()+","+block.getZ()+";key:"+key;
+        String string = "loc_"+block.getX()+"."+block.getY()+"."+block.getZ()+"/key_"+key;
         return dataContainer.get(new NamespacedKey(plugin, string), persistentDataType);
 
     }
@@ -36,7 +36,7 @@ public class TagManager {
 
         Chunk chunk = block.getChunk();
         PersistentDataContainer dataContainer = chunk.getPersistentDataContainer();
-        String string = "loc:"+block.getX()+","+block.getY()+","+block.getZ()+";key:"+key;
+        String string = "loc_"+block.getX()+"."+block.getY()+"."+block.getZ()+"/key_"+key;
         dataContainer.remove(new NamespacedKey(plugin, string));
 
     }
@@ -45,7 +45,7 @@ public class TagManager {
 
         Chunk chunk = block.getChunk();
         PersistentDataContainer dataContainer = chunk.getPersistentDataContainer();
-        String string = "loc:"+block.getX()+","+block.getY()+","+block.getZ()+";key:"+key;
+        String string = "loc_"+block.getX()+"."+block.getY()+"."+block.getZ()+"/key_"+key;
         dataContainer.set(new NamespacedKey(plugin, string), persistentDataType, value);
 
     }
