@@ -13,6 +13,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class GiveItemCommand implements TabExecutor {
 
@@ -20,6 +21,8 @@ public class GiveItemCommand implements TabExecutor {
 
     public GiveItemCommand(MoreRedstone plugin) {
         this.plugin = plugin;
+        Objects.requireNonNull(plugin.getCommand("redstone")).setExecutor(this);
+        Objects.requireNonNull(plugin.getCommand("redstone")).setTabCompleter(this);
     }
 
     @Override
