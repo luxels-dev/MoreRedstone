@@ -9,6 +9,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.metadata.MetadataValue;
 import org.bukkit.persistence.PersistentDataType;
 
 public class BlockListeners implements Listener {
@@ -48,13 +49,15 @@ public class BlockListeners implements Listener {
 
         Block block = event.getBlock();
         TagManager tagManager = plugin.getTagManager();
-        String customBlockType = tagManager.block(block, "customBlockType").getFirst().toString();
+        MetadataValue customBlockTypeValue = tagManager.block(block, "customBlockType").getFirst();
+        if (customBlockTypeValue == null) return;
+        String customBlockType = customBlockTypeValue.asString();
 
         switch (customBlockType) {
             case "blockBreaker":
                 blockBreaker.onBreak(event);
                 break;
-            case null, default:
+            default:
                 break;
         }
 
