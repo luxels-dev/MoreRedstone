@@ -4,6 +4,7 @@ import fr.luxdev.moreRedstone.MoreRedstone;
 import fr.luxdev.moreRedstone.Utils.TagManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
+import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -61,8 +62,8 @@ public class BlockBreaker {
 
         dropItemStackMeta.itemName(Component.text("Block Breaker", TextColor.color(185, 159, 148)));
         dropItemStackMeta.lore(List.of(
-                Component.text("When powered by redstone :", TextColor.color(155, 150, 143)),
-                Component.text("  Breaks the block it is looking at", TextColor.color(155, 150, 143))
+                Component.text("When powered by redstone :", TextColor.color(155, 150, 143)).decoration(TextDecoration.ITALIC, false),
+                Component.text("  Breaks the block it is looking at", TextColor.color(155, 150, 143)).decoration(TextDecoration.ITALIC, false)
         ));
 
         dropItemStack.setItemMeta(dropItemStackMeta);
