@@ -10,6 +10,7 @@ import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import javax.lang.model.type.NullType;
 import java.util.List;
 
 public class TagManager {
@@ -55,7 +56,8 @@ public class TagManager {
                 object instanceof Integer ||
                 object instanceof Long ||
                 object instanceof Short ||
-                object instanceof String;
+                object instanceof String ||
+                object instanceof NullType;
     }
 
 }

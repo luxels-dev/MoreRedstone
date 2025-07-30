@@ -40,6 +40,8 @@ public class BlockBreaker {
 
     public void onBreak(BlockBreakEvent event) {
 
+        TagManager tagManager = plugin.getTagManager();
+
         if (event.getBlock().getType() != Material.DISPENSER) return;
 
         event.setDropItems(false);
@@ -49,9 +51,11 @@ public class BlockBreaker {
         Entity entity = dropSpawnLocation.getWorld().spawnEntity(dropSpawnLocation, EntityType.ITEM, false);
         if (!(entity instanceof Item drop)) return;
 
-        ItemStack dropItemStack = item(plugin.getTagManager());
+        ItemStack dropItemStack = item(tagManager);
 
         drop.setItemStack(dropItemStack);
+
+        tagManager.setBlock(block, "customBlockType", null);
 
     }
 
