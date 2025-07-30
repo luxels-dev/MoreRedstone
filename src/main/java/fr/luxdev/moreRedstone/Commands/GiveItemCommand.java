@@ -63,7 +63,8 @@ public class GiveItemCommand implements TabExecutor {
             for (String itemName : listOfItemNames) {
                 givingMessage.append(itemName).append(", ");
             }
-            givingMessage.append("were given");
+            String verb = listOfItemNames.size()>1 ? "were" : "was";
+            givingMessage.append(verb).append(" given");
         }
 
         player.sendMessage(givingMessage.toString());

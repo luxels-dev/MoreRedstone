@@ -20,6 +20,7 @@ public class BlockListeners implements Listener {
     public BlockListeners(MoreRedstone plugin) {
 
         this.plugin = plugin;
+        plugin.getServer().getPluginManager().registerEvents(this, plugin);
 
         blockBreaker = new BlockBreaker(plugin);
 
