@@ -1,0 +1,8 @@
+name: MoreRedstone
+version: '1.0-SNAPSHOT'
+main: fr.luxdev.moreRedstone.MoreRedstone
+api-version: '1.21'
+prefix: MoreRedstone
+load: STARTUP
+authors: [ Luxels ]
+description: This plugin gives new redstone components
