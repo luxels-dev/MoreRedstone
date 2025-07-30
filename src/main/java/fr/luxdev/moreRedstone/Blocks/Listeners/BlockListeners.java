@@ -51,9 +51,7 @@ public class BlockListeners implements Listener {
 
         Block block = event.getBlock();
         TagManager tagManager = plugin.getTagManager();
-        List<MetadataValue> customBlockTypeValue = tagManager.block(block, "customBlockType");
-        if (customBlockTypeValue.isEmpty()) return;
-        String customBlockType = customBlockTypeValue.getFirst().asString();
+        String customBlockType = tagManager.block(block, "customBlockType", PersistentDataType.STRING);
 
         switch (customBlockType) {
             case "blockBreaker":

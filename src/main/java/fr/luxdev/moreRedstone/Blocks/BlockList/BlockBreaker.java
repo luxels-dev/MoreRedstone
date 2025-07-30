@@ -34,7 +34,7 @@ public class BlockBreaker {
         Block block = event.getBlockPlaced();
         TagManager tagManager = plugin.getTagManager();
 
-        tagManager.setBlock(block, "customBlockType", "blockBreaker");
+        tagManager.setBlock(block, "customBlockType", PersistentDataType.STRING, "blockBreaker");
 
     }
 
@@ -48,7 +48,7 @@ public class BlockBreaker {
         Block block = event.getBlock();
         Location dropSpawnLocation = block.getLocation().toCenterLocation();
 
-        Entity entity = dropSpawnLocation.getWorld().spawnEntity(dropSpawnLocation, EntityType.ITEM, false);
+        Entity entity = dropSpawnLocation.getWorld().spawnEntity(dropSpawnLocation, EntityType.ITEM, true);
         if (!(entity instanceof Item drop)) return;
 
         ItemStack dropItemStack = item(tagManager);

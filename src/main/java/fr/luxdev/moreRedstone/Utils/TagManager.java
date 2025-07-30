@@ -1,11 +1,13 @@
 package fr.luxdev.moreRedstone.Utils;
 
 import fr.luxdev.moreRedstone.MoreRedstone;
+import org.bukkit.Chunk;
 import org.bukkit.NamespacedKey;
 import org.bukkit.block.Block;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.metadata.MetadataValue;
+import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -21,24 +23,30 @@ public class TagManager {
         this.plugin = plugin;
     }
 
-    public @NotNull List<MetadataValue> block(Block block, String key) {
-        return block.getMetadata(key);
+    public <P, C> C block(Block block, String key, PersistentDataType<P, C> persistentDataType) {
+
+        Chunk chunk = block.getChunk();
+        PersistentDataContainer dataContainer = chunk.getPersistentDataContainer();
+        String string = "loc:"+block.getX()+","+block.getY()+","+block.getZ()+";key:"+key;
+        return dataContainer.get(new NamespacedKey(plugin, string), persistentDataType);
+
     }
 
     public void removeBlock(Block block, String key) {
-        block.removeMetadata(key, plugin);
+
+        Chunk chunk = block.getChunk();
+        PersistentDataContainer dataContainer = chunk.getPersistentDataContainer();
+        String string = "loc:"+block.getX()+","+block.getY()+","+block.getZ()+";key:"+key;
+        dataContainer.remove(new NamespacedKey(plugin, string));
+
     }
 
-    public void setBlock(Block block, String key, Object value) {
+    public <P, C> void setBlock(Block block, String key, PersistentDataType<P, C> persistentDataType, C value) {
 
-        if (isValid(value))
-        {
-            block.setMetadata(key, new FixedMetadataValue(plugin, value));
-        }
-
-        else {
-            plugin.getLogger().warning(value.toString()+" was not saved, because it wasn't a valid value\nKey : "+key+"\nBlock : "+block.toString());
-        }
+        Chunk chunk = block.getChunk();
+        PersistentDataContainer dataContainer = chunk.getPersistentDataContainer();
+        String string = "loc:"+block.getX()+","+block.getY()+","+block.getZ()+";key:"+key;
+        dataContainer.set(new NamespacedKey(plugin, string), persistentDataType, value);
 
     }
 
