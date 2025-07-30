@@ -9,11 +9,9 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPhysicsEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.metadata.MetadataValue;
 import org.bukkit.persistence.PersistentDataType;
-
-import java.util.List;
 
 public class BlockListeners implements Listener {
 
@@ -33,12 +31,8 @@ public class BlockListeners implements Listener {
     @EventHandler
     public void placeBlockEvent(BlockPlaceEvent event) {
 
-        ItemStack item = event.getItemInHand();
-        TagManager tagManager = plugin.getTagManager();
-        String itemCustomBlockType = tagManager.item(item, "itemCustomBlockType", PersistentDataType.STRING);
-
-        switch (itemCustomBlockType) {
-            case "blockBreakerItem":
+        switch (getitemType(event.getItemInHand())) {
+            case BLOCK_BREAKER_ITEM:
                 blockBreaker.onPlace(event);
                 break;
             case null, default:
@@ -53,12 +47,13 @@ public class BlockListeners implements Listener {
         Block block = event.getBlock();
         TagManager tagManager = plugin.getTagManager();
         String customBlockType = tagManager.block(block, "customBlockType", PersistentDataType.STRING);
+        if (customBlockType==null) return;
 
-        switch (customBlockType) {
-            case "blockBreaker":
+        switch (getBlockType(event.getBlock())) {
+            case BLOCK_BREAKER:
                 blockBreaker.onBreak(event);
                 break;
-            default:
+            case null, default:
                 break;
         }
 
@@ -67,17 +62,68 @@ public class BlockListeners implements Listener {
     @EventHandler
     public void blockPhysicsEvent(BlockPhysicsEvent event) {
 
-        Block block = event.getBlock();
-        TagManager tagManager = plugin.getTagManager();
-        String customBlockType = tagManager.block(block, "customBlockType", PersistentDataType.STRING);
-
-        switch (customBlockType) {
-            case "blockBreaker":
+        switch (getBlockType(event.getBlock())) {
+            case BLOCK_BREAKER:
                 blockBreaker.onPhysics(event);
                 break;
-            default:
+            case null, default:
                 break;
         }
 
     }
+
+    @EventHandler
+    public void blockInteractEvent(PlayerInteractEvent event) {
+
+        Block clickedBlock = event.getClickedBlock();
+        if (clickedBlock==null) return;
+
+        switch (getBlockType(clickedBlock)) {
+            case BLOCK_BREAKER:
+                blockBreaker.onInteract(event);
+                break;
+            case null, default:
+                break;
+        }
+
+    }
+
+    private BlockType getBlockType(Block block) {
+
+        TagManager tagManager = plugin.getTagManager();
+        String customBlockType = tagManager.block(block, "customBlockType", PersistentDataType.STRING);
+        return switch (customBlockType) {
+            case "blockBreaker" -> BlockType.BLOCK_BREAKER;
+            case "blockPlacer" -> BlockType.BLOCK_PLACER;
+            case null, default -> null;
+        };
+
+    }
+
+    private ItemType getitemType(ItemStack itemStack) {
+
+        TagManager tagManager = plugin.getTagManager();
+        String itemCustomBlockType = tagManager.item(itemStack, "itemCustomBlockType", PersistentDataType.STRING);
+        return switch (itemCustomBlockType) {
+            case "blockBreakerItem" -> ItemType.BLOCK_BREAKER_ITEM;
+            case "blockPlacerItem" -> ItemType.BLOCK_PLACER_ITEM;
+            case null, default -> null;
+        };
+
+    }
+
+    public enum BlockType {
+
+        BLOCK_BREAKER,
+        BLOCK_PLACER
+
+    }
+
+    public enum ItemType {
+
+        BLOCK_BREAKER_ITEM,
+        BLOCK_PLACER_ITEM
+
+    }
+
 }

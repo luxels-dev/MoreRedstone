@@ -2,7 +2,6 @@ package fr.luxdev.moreRedstone.Commands;
 
 import fr.luxdev.moreRedstone.Blocks.BlockList.BlockBreaker;
 import fr.luxdev.moreRedstone.MoreRedstone;
-import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabExecutor;

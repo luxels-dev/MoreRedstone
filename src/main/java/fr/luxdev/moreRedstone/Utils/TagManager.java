@@ -5,15 +5,9 @@ import org.bukkit.Chunk;
 import org.bukkit.NamespacedKey;
 import org.bukkit.block.Block;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.metadata.FixedMetadataValue;
-import org.bukkit.metadata.MetadataValue;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import javax.lang.model.type.NullType;
-import java.util.List;
 
 public class TagManager {
 
@@ -23,7 +17,7 @@ public class TagManager {
         this.plugin = plugin;
     }
 
-    public <P, C> C block(Block block, String key, PersistentDataType<P, C> persistentDataType) {
+    public @Nullable <P, C> C block(Block block, String key, PersistentDataType<P, C> persistentDataType) {
 
         Chunk chunk = block.getChunk();
         PersistentDataContainer dataContainer = chunk.getPersistentDataContainer();

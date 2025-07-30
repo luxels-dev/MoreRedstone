@@ -9,12 +9,17 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
+import org.bukkit.block.data.BlockData;
+import org.bukkit.block.data.Directional;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Item;
+import org.bukkit.entity.Player;
+import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPhysicsEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
@@ -69,8 +74,9 @@ public class BlockBreaker {
 
         if (!block.isBlockIndirectlyPowered()) return;
 
-        BlockFace blockFace = block.getFace(block);
-        if (blockFace==null) return;
+        BlockData blockData = block.getBlockData();
+        if (!(blockData instanceof Directional directional)) return;
+        BlockFace blockFace = directional.getFacing();
         Block blockToBreak = block.getRelative(blockFace);
 
         if (blockToBreak.getType()==Material.BEDROCK ||
@@ -83,6 +89,20 @@ public class BlockBreaker {
         ) return;
 
         blockToBreak.breakNaturally(new ItemStack(Material.DIAMOND_PICKAXE), true, true);
+
+    }
+
+    public void onInteract(PlayerInteractEvent event) {
+
+        Player player = event.getPlayer();
+
+        if (event.getAction()!= Action.RIGHT_CLICK_BLOCK) return;
+        boolean isSneaking = player.isSneaking();
+        boolean holdingBlockItem = event.getItem() != null && (event.getItem().getType().isBlock() || !event.getItem().getType().isSolid());
+
+        if (!isSneaking || !holdingBlockItem) {
+            event.setCancelled(true);
+        }
 
     }
 
