@@ -1,10 +1,10 @@
 package fr.luxdev.moreRedstone.Blocks.Listeners;
 
 import fr.luxdev.moreRedstone.Blocks.BlockList.BlockBreaker;
+import fr.luxdev.moreRedstone.Blocks.BlockList.BlockPlacer;
 import fr.luxdev.moreRedstone.MoreRedstone;
 import fr.luxdev.moreRedstone.Utils.TagManager;
 import io.papermc.paper.event.block.BlockFailedDispenseEvent;
-import io.papermc.paper.event.block.BlockPreDispenseEvent;
 import org.bukkit.block.Block;
 import org.bukkit.block.Dispenser;
 import org.bukkit.event.EventHandler;
@@ -22,6 +22,7 @@ public class BlockListeners implements Listener {
     private final MoreRedstone plugin;
 
     private final BlockBreaker blockBreaker;
+    private final BlockPlacer blockPlacer;
 
     public BlockListeners(MoreRedstone plugin) {
 
@@ -29,6 +30,7 @@ public class BlockListeners implements Listener {
         plugin.getServer().getPluginManager().registerEvents(this, plugin);
 
         blockBreaker = new BlockBreaker(plugin);
+        blockPlacer = new BlockPlacer(plugin);
 
     }
 
@@ -38,6 +40,9 @@ public class BlockListeners implements Listener {
         switch (getitemType(event.getItemInHand())) {
             case BLOCK_BREAKER_ITEM:
                 blockBreaker.onPlace(event);
+                break;
+            case BLOCK_PLACER_ITEM:
+                blockPlacer.onPlace(event);
                 break;
             case null, default:
                 break;
@@ -57,6 +62,9 @@ public class BlockListeners implements Listener {
             case BLOCK_BREAKER:
                 blockBreaker.onBreak(event);
                 break;
+            case BLOCK_PLACER:
+                blockPlacer.onBreak(event);
+                break;
             case null, default:
                 break;
         }
@@ -69,6 +77,9 @@ public class BlockListeners implements Listener {
         switch (getBlockType(event.getBlock())) {
             case BLOCK_BREAKER:
                 blockBreaker.onPhysics(event);
+                break;
+            case BLOCK_PLACER:
+                blockPlacer.onPhysics(event);
                 break;
             case null, default:
                 break;
@@ -98,7 +109,7 @@ public class BlockListeners implements Listener {
         Block clickedBlock = event.getBlock();
 
         switch (getBlockType(clickedBlock)) {
-            case BLOCK_BREAKER:
+            case BLOCK_BREAKER, BLOCK_PLACER:
                 event.shouldPlayEffect(false);
                 break;
             case null, default:
