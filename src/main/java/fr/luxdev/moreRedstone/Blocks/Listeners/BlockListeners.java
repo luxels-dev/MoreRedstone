@@ -3,12 +3,15 @@ package fr.luxdev.moreRedstone.Blocks.Listeners;
 import fr.luxdev.moreRedstone.Blocks.BlockList.BlockBreaker;
 import fr.luxdev.moreRedstone.MoreRedstone;
 import fr.luxdev.moreRedstone.Utils.TagManager;
+import io.papermc.paper.event.block.BlockPreDispenseEvent;
 import org.bukkit.block.Block;
+import org.bukkit.block.Dispenser;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPhysicsEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.inventory.InventoryMoveItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataType;
@@ -81,6 +84,37 @@ public class BlockListeners implements Listener {
         switch (getBlockType(clickedBlock)) {
             case BLOCK_BREAKER:
                 blockBreaker.onInteract(event);
+                break;
+            case null, default:
+                break;
+        }
+
+    }
+
+    @EventHandler
+    public void blockDispenseEvent(BlockPreDispenseEvent event) {
+
+        Block clickedBlock = event.getBlock();
+
+        switch (getBlockType(clickedBlock)) {
+            case BLOCK_BREAKER:
+                event.setCancelled(true);
+                break;
+            case null, default:
+                break;
+        }
+
+    }
+
+    @EventHandler
+    public void blockInventoryMoveEvent(InventoryMoveItemEvent event) {
+
+        if (!(event.getDestination().getHolder() instanceof Dispenser dispenser)) return;
+        Block clickedBlock = dispenser.getBlock();
+
+        switch (getBlockType(clickedBlock)) {
+            case BLOCK_BREAKER:
+                event.setCancelled(true);
                 break;
             case null, default:
                 break;
