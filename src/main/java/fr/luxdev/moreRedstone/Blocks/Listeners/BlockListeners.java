@@ -3,6 +3,7 @@ package fr.luxdev.moreRedstone.Blocks.Listeners;
 import fr.luxdev.moreRedstone.Blocks.BlockList.BlockBreaker;
 import fr.luxdev.moreRedstone.MoreRedstone;
 import fr.luxdev.moreRedstone.Utils.TagManager;
+import io.papermc.paper.event.block.BlockFailedDispenseEvent;
 import io.papermc.paper.event.block.BlockPreDispenseEvent;
 import org.bukkit.block.Block;
 import org.bukkit.block.Dispenser;
@@ -92,13 +93,13 @@ public class BlockListeners implements Listener {
     }
 
     @EventHandler
-    public void blockDispenseEvent(BlockPreDispenseEvent event) {
+    public void blockDispenseEvent(BlockFailedDispenseEvent event) {
 
         Block clickedBlock = event.getBlock();
 
         switch (getBlockType(clickedBlock)) {
             case BLOCK_BREAKER:
-                event.setCancelled(true);
+                event.shouldPlayEffect(false);
                 break;
             case null, default:
                 break;
