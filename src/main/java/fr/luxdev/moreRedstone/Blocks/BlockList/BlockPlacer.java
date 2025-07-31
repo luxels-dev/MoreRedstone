@@ -12,9 +12,12 @@ import org.bukkit.block.Container;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPhysicsEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryCreativeEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.Iterator;
 import java.util.List;
@@ -43,8 +46,13 @@ public class BlockPlacer {
     public void onBreak(BlockBreakEvent event) {
         Block block = event.getBlock();
         if (!isBlockValid(block)) return;
+        if (!(block.getState() instanceof Container container)) return;
+        for (ItemStack itemStack : container.getInventory()) {
+            BlockManager.dropItemOnBreakEvent(event, itemStack);
+        }
         BlockManager.dropItemOnBreakEvent(event, item(tagManager));
         tagManager.removeBlock(block, "customBlockType");
+
     }
 
     public void onPhysics(BlockPhysicsEvent event) {
@@ -55,17 +63,30 @@ public class BlockPlacer {
         if (blockToPlace==null || blockToPlace.getType()!=Material.AIR) return;
         if (!(block.getState() instanceof Container container)) return;
         Material material = null;
-        Iterator<ItemStack> itemStackIterator = container.getInventory().iterator();
-        while (itemStackIterator.hasNext()) {
-            ItemStack itemStack = itemStackIterator.next();
-            if (itemStack!=null && itemStack.getType().isBlock()) {
+        for (ItemStack itemStack : container.getInventory()) {
+            if (itemStack != null && itemStack.getType().isBlock()) {
                 material = itemStack.getType();
-                if (itemStack.getAmount()==1) itemStackIterator.remove();
-                else itemStack.setAmount(itemStack.getAmount()-1);
+                itemStack.setAmount(itemStack.getAmount() - 1);
                 break;
             }
         }
-        if (material!=null) blockToPlace.setType(material, true);
+        if (material!=null) {
+            Material finalMaterial = material;
+            new BukkitRunnable() {
+                @Override
+                public void run() {
+                    blockToPlace.setType(finalMaterial, true);
+                }
+            }.runTaskLater(plugin, 1);
+        }
+    }
+
+    public void onCreativePick(InventoryCreativeEvent event) {
+        event.getWhoClicked().getInventory().setItem(event.getSlot(), item(tagManager));
+    }
+
+    public void onCreativePick(InventoryClickEvent event) {
+        event.getWhoClicked().getInventory().setItem(event.getSlot(), item(tagManager));
     }
 
     public static ItemStack item(TagManager tagManager) {

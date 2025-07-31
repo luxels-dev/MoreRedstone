@@ -11,6 +11,8 @@ import org.bukkit.block.Block;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPhysicsEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryCreativeEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -59,6 +61,14 @@ public class BlockBreaker {
 
     public void onInteract(PlayerInteractEvent event) {
         BlockManager.cancelInventoryOpenableBlockInteraction(event);
+    }
+
+    public void onCreativePick(InventoryCreativeEvent event) {
+        event.getWhoClicked().getInventory().setItem(event.getSlot(), item(tagManager));
+    }
+
+    public void onCreativePick(InventoryClickEvent event) {
+        event.getWhoClicked().getInventory().setItem(event.getSlot(), item(tagManager));
     }
 
     public static ItemStack item(TagManager tagManager) {

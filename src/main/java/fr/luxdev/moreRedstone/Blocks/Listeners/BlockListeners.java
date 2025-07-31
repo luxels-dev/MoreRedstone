@@ -5,13 +5,16 @@ import fr.luxdev.moreRedstone.Blocks.BlockList.BlockPlacer;
 import fr.luxdev.moreRedstone.MoreRedstone;
 import fr.luxdev.moreRedstone.Utils.TagManager;
 import io.papermc.paper.event.block.BlockFailedDispenseEvent;
+import io.papermc.paper.event.block.BlockPreDispenseEvent;
+import org.bukkit.GameMode;
 import org.bukkit.block.Block;
 import org.bukkit.block.Dispenser;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.block.BlockBreakEvent;
-import org.bukkit.event.block.BlockPhysicsEvent;
-import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.block.*;
+import org.bukkit.event.inventory.ClickType;
+import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryCreativeEvent;
 import org.bukkit.event.inventory.InventoryMoveItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
@@ -53,6 +56,7 @@ public class BlockListeners implements Listener {
     @EventHandler
     public void breakBlockEvent(BlockBreakEvent event) {
 
+        if (event.getPlayer().getGameMode()== GameMode.CREATIVE) return;
         Block block = event.getBlock();
         TagManager tagManager = plugin.getTagManager();
         String customBlockType = tagManager.block(block, "customBlockType", PersistentDataType.STRING);
@@ -119,6 +123,51 @@ public class BlockListeners implements Listener {
     }
 
     @EventHandler
+    public void blockReallyDispenseEvent(BlockDispenseEvent event) {
+
+        Block clickedBlock = event.getBlock();
+
+        switch (getBlockType(clickedBlock)) {
+            case BLOCK_BREAKER, BLOCK_PLACER:
+                event.setCancelled(true);
+                break;
+            case null, default:
+                break;
+        }
+
+    }
+
+    @EventHandler
+    public void blockDropEvent(BlockDropItemEvent event) {
+
+        Block clickedBlock = event.getBlock();
+
+        switch (getBlockType(clickedBlock)) {
+            case BLOCK_BREAKER, BLOCK_PLACER:
+                event.setCancelled(true);
+                break;
+            case null, default:
+                break;
+        }
+
+    }
+
+    @EventHandler
+    public void blockPreDispenseEvent(BlockPreDispenseEvent event) {
+
+        Block clickedBlock = event.getBlock();
+
+        switch (getBlockType(clickedBlock)) {
+            case BLOCK_BREAKER, BLOCK_PLACER:
+                event.setCancelled(true);
+                break;
+            case null, default:
+                break;
+        }
+
+    }
+
+    @EventHandler
     public void blockInventoryMoveEvent(InventoryMoveItemEvent event) {
 
         if (!(event.getDestination().getHolder() instanceof Dispenser dispenser)) return;
@@ -127,6 +176,46 @@ public class BlockListeners implements Listener {
         switch (getBlockType(clickedBlock)) {
             case BLOCK_BREAKER:
                 event.setCancelled(true);
+                break;
+            case null, default:
+                break;
+        }
+
+    }
+
+    @EventHandler
+    public void blockCreativePickEvent(InventoryCreativeEvent event) {
+
+        if (event.getClick()!= ClickType.MIDDLE) return;
+        Block clickedBlock = event.getWhoClicked().getTargetBlockExact(10);
+        if (clickedBlock==null) return;
+
+        switch (getBlockType(clickedBlock)) {
+            case BLOCK_BREAKER:
+                blockBreaker.onCreativePick(event);
+                break;
+            case BLOCK_PLACER:
+                blockPlacer.onCreativePick(event);
+                break;
+            case null, default:
+                break;
+        }
+
+    }
+
+    @EventHandler
+    public void blockInventoryPickEvent(InventoryClickEvent event) {
+
+        if (event.getClick()!= ClickType.CREATIVE) return;
+        Block clickedBlock = event.getWhoClicked().getTargetBlockExact(10);
+        if (clickedBlock==null) return;
+
+        switch (getBlockType(clickedBlock)) {
+            case BLOCK_BREAKER:
+                blockBreaker.onCreativePick(event);
+                break;
+            case BLOCK_PLACER:
+                blockPlacer.onCreativePick(event);
                 break;
             case null, default:
                 break;
