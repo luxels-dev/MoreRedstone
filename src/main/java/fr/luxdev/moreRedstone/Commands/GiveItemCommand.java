@@ -1,6 +1,7 @@
 package fr.luxdev.moreRedstone.Commands;
 
 import fr.luxdev.moreRedstone.Blocks.BlockList.BlockBreaker;
+import fr.luxdev.moreRedstone.Blocks.BlockList.BlockPlacer;
 import fr.luxdev.moreRedstone.MoreRedstone;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -46,6 +47,10 @@ public class GiveItemCommand implements TabExecutor {
                     listOfItems.add(BlockBreaker.item(plugin.getTagManager()));
                     listOfItemNames.add(string.toLowerCase());
                     break;
+                case "block_placer":
+                    listOfItems.add(BlockPlacer.item(plugin.getTagManager()));
+                    listOfItemNames.add(string.toLowerCase());
+                    break;
                 default:
                     player.sendMessage("§c\""+string.toLowerCase()+"\" does not exist");
                     break;
@@ -75,7 +80,7 @@ public class GiveItemCommand implements TabExecutor {
 
     @Override
     public @Nullable List<String> onTabComplete(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String s, @NotNull String @NotNull [] strings) {
-        return List.of("block_breaker");
+        return List.of("block_breaker", "block_placer");
     }
 
 }
