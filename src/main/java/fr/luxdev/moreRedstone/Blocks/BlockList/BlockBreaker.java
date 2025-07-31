@@ -3,6 +3,7 @@ package fr.luxdev.moreRedstone.Blocks.BlockList;
 import fr.luxdev.moreRedstone.Blocks.BlockManager;
 import fr.luxdev.moreRedstone.MoreRedstone;
 import fr.luxdev.moreRedstone.Utils.TagManager;
+import io.papermc.paper.event.player.PlayerPickItemEvent;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextDecoration;
@@ -56,6 +57,7 @@ public class BlockBreaker {
         Block blockToBreak = BlockManager.getBlockLookingAt(block);
         if (blockToBreak==null) return;
         if (BlockManager.isBlockUnbreakable(blockToBreak)) return;
+        if (tagManager.block(blockToBreak, "customBlockType", PersistentDataType.STRING)!=null) return;
         blockToBreak.breakNaturally(new ItemStack(Material.DIAMOND_PICKAXE), true, true);
     }
 
@@ -63,12 +65,8 @@ public class BlockBreaker {
         BlockManager.cancelInventoryOpenableBlockInteraction(event);
     }
 
-    public void onCreativePick(InventoryCreativeEvent event) {
-        event.getWhoClicked().getInventory().setItem(event.getSlot(), item(tagManager));
-    }
-
-    public void onCreativePick(InventoryClickEvent event) {
-        event.getWhoClicked().getInventory().setItem(event.getSlot(), item(tagManager));
+    public void onCreativePick(PlayerPickItemEvent event) {
+        event.getPlayer().getInventory().setItem(event.getTargetSlot(), item(tagManager));
     }
 
     public static ItemStack item(TagManager tagManager) {

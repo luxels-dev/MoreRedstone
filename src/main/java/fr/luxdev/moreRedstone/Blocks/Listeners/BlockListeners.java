@@ -6,16 +6,14 @@ import fr.luxdev.moreRedstone.MoreRedstone;
 import fr.luxdev.moreRedstone.Utils.TagManager;
 import io.papermc.paper.event.block.BlockFailedDispenseEvent;
 import io.papermc.paper.event.block.BlockPreDispenseEvent;
+import io.papermc.paper.event.player.PlayerPickItemEvent;
 import org.bukkit.GameMode;
 import org.bukkit.block.Block;
 import org.bukkit.block.Dispenser;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.*;
-import org.bukkit.event.inventory.ClickType;
-import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.event.inventory.InventoryCreativeEvent;
-import org.bukkit.event.inventory.InventoryMoveItemEvent;
+import org.bukkit.event.inventory.*;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataType;
@@ -57,10 +55,6 @@ public class BlockListeners implements Listener {
     public void breakBlockEvent(BlockBreakEvent event) {
 
         if (event.getPlayer().getGameMode()== GameMode.CREATIVE) return;
-        Block block = event.getBlock();
-        TagManager tagManager = plugin.getTagManager();
-        String customBlockType = tagManager.block(block, "customBlockType", PersistentDataType.STRING);
-        if (customBlockType==null) return;
 
         switch (getBlockType(event.getBlock())) {
             case BLOCK_BREAKER:
@@ -184,30 +178,9 @@ public class BlockListeners implements Listener {
     }
 
     @EventHandler
-    public void blockCreativePickEvent(InventoryCreativeEvent event) {
+    public void blockPickEvent(PlayerPickItemEvent event) {
 
-        if (event.getClick()!= ClickType.MIDDLE) return;
-        Block clickedBlock = event.getWhoClicked().getTargetBlockExact(10);
-        if (clickedBlock==null) return;
-
-        switch (getBlockType(clickedBlock)) {
-            case BLOCK_BREAKER:
-                blockBreaker.onCreativePick(event);
-                break;
-            case BLOCK_PLACER:
-                blockPlacer.onCreativePick(event);
-                break;
-            case null, default:
-                break;
-        }
-
-    }
-
-    @EventHandler
-    public void blockInventoryPickEvent(InventoryClickEvent event) {
-
-        if (event.getClick()!= ClickType.CREATIVE) return;
-        Block clickedBlock = event.getWhoClicked().getTargetBlockExact(10);
+        Block clickedBlock = event.getPlayer().getTargetBlockExact(10);
         if (clickedBlock==null) return;
 
         switch (getBlockType(clickedBlock)) {

@@ -3,6 +3,7 @@ package fr.luxdev.moreRedstone.Blocks.BlockList;
 import fr.luxdev.moreRedstone.Blocks.BlockManager;
 import fr.luxdev.moreRedstone.MoreRedstone;
 import fr.luxdev.moreRedstone.Utils.TagManager;
+import io.papermc.paper.event.player.PlayerPickItemEvent;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextDecoration;
@@ -64,7 +65,7 @@ public class BlockPlacer {
         if (!(block.getState() instanceof Container container)) return;
         Material material = null;
         for (ItemStack itemStack : container.getInventory()) {
-            if (itemStack != null && itemStack.getType().isBlock()) {
+            if (itemStack != null && itemStack.getType().isBlock() && tagManager.item(itemStack, "itemCustomBlockType", PersistentDataType.STRING)==null) {
                 material = itemStack.getType();
                 itemStack.setAmount(itemStack.getAmount() - 1);
                 break;
@@ -81,12 +82,8 @@ public class BlockPlacer {
         }
     }
 
-    public void onCreativePick(InventoryCreativeEvent event) {
-        event.getWhoClicked().getInventory().setItem(event.getSlot(), item(tagManager));
-    }
-
-    public void onCreativePick(InventoryClickEvent event) {
-        event.getWhoClicked().getInventory().setItem(event.getSlot(), item(tagManager));
+    public void onCreativePick(PlayerPickItemEvent event) {
+        event.getPlayer().getInventory().setItem(event.getTargetSlot(), item(tagManager));
     }
 
     public static ItemStack item(TagManager tagManager) {
